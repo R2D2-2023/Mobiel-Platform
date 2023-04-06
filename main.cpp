@@ -1,133 +1,73 @@
-#include <RPLidar.h>
-#include <L298N.h>
-
-#define RPLIDAR_MOTOR 10 
 #include "Wire.h"
 #include <MPU6050_light.h>
 MPU6050 mpu(Wire);
 
-// motor pin definition
-#define M_EN 9
-#define M_IN1 8
-#define M_IN2 7
-#define M_EN1 12
-#define M_IN3 11
-#define M_IN4 2
-RPLidar lidar;
-L298N motor1(M_EN, M_IN1, M_IN2);
-L298N motor2(M_EN1, M_IN3, M_IN4);
-float minDistance = 100000;
-float angleAtMinDist = 0;
-unsigned short driverPwm = 255;
-const int numReadings = 10;
+float total_angle = 0;
+float target_angle = 0;
+bool is_rotating = false;
 
-int readings[numReadings];  // the readings from the analog input
-int readIndex = 0;          // the index of the current reading
-int total = 0;              // the running total
-int average = 0;            // the average
-
-
-// variables for sending information frequency configuration
-long previousMillis = 0; 
-long interval = 200;  
-float robotAngle = 0;
 void setup() {
-  Serial.begin(115200);
-  pinMode(LED_BUILTIN, OUTPUT);
-
-   Wire.begin();
- byte status = mpu.begin();
-   delay(1000);
-   mpu.calcOffsets(); // gyro  
-   for (int thisReading = 0; thisReading < numReadings; thisReading++) {
-    readings[thisReading] = 0;
-  }
-
+  Serial.begin(9600);
+  Wire.begin();
+  byte status = mpu.begin();
+  delay(1000);
+  mpu.calcOffsets();
 }
 
 float getAngle(){
   mpu.update();
-  return mpu.getAngleZ() - robotAngle;
+  return mpu.getAngleZ();
 }
 
-
-float pow(float nmbr){
-  return nmbr * nmbr;
+void setMotorSpeed(float left, float right){
+  Serial.print("Current Angle: ");
+  Serial.print(getAngle());
+  Serial.print(" || Motor Left: ");
+  Serial.print(255 - left);
+  Serial.print(" || Motor Right: ");
+  Serial.println(255 - right);
+  Serial.println("\n");
 }
 
 float checkSpeed(int target_angle){
   mpu.update();
-
-  return pow((target_angle - mpu.getAngleZ())*0.177);
+  float error = target_angle - getAngle();
+  float speed = abs(error * 0.1773);
+  speed = constrain(speed*speed, 0, 255);
+  return speed;
 }
-void rotate(int target_angle, L298N motor1, L298N motor2){
-  int current_angle = getAngle();
-  // int b = 0;
-  
-  if (target_angle > 0){
-    while (current_angle < target_angle)
-    {
-      float speed = checkSpeed(target_angle);     
-      Serial.println(getAngle());
-       Serial.println(255 - speed);
-      current_angle = getAngle();
-    }
 
-    
-  } else {
-    while (current_angle > target_angle)
-    {
-      float speed = checkSpeed(target_angle); 
-            Serial.println(getAngle());
-     
-      Serial.println(-255 + speed);
-      current_angle = getAngle();
+float last_error = 0;
+void rotateTo(int target_angle){
+  while (abs(target_angle - getAngle()) > 2 || abs(last_error - (target_angle - getAngle())) > 1) {
+    last_error = target_angle - getAngle();
+    float speed = checkSpeed(target_angle);
+    if (getAngle() < target_angle) {
+      setMotorSpeed(speed, 0);
+    } else {
+      setMotorSpeed(0, speed);
     }
   }
-  // else{
-  //   while (current_angle > target_angle){
-  //     b++;
-  //     float speed = checkSpeed(target_angle);
-      
-  //       Serial.println(-255 + speed);
-      
-  //     mpu.update();
-  //     current_angle = mpu.getAngleZ();
-  //   }
-
-      
-  // }
-  
-
- 
+  setMotorSpeed(0, 0);
 }
 
 void loop() {
-  
-    //perform data processing here... 
-     // 0-360 deg
-  total = total - readings[readIndex];
-  readings[readIndex] = mpu.getAngleZ();
-
-  total = total + readings[readIndex];
-  readIndex = readIndex + 1;
-
-  if (readIndex >= numReadings) {
-    readIndex = 0;
-  }
-  
-  average = total / numReadings;
-  int target = 90;
-  // Serial.println(average);
-  Serial.print(getAngle());
-  if (getAngle() < target ){
-    rotate(target, motor1, motor2);
+  if (Serial.available() > 0) {
+    float angle = Serial.parseFloat();
+    if (angle >= -90 && angle <= 90) {
+      if (!is_rotating) {
+        total_angle = getAngle();
+        is_rotating = true;
+        rotateTo(total_angle + angle);
+      } else {
+        total_angle = getAngle();
+        rotateTo(total_angle);
+      }
+    }
   } else {
-    Serial.println("offset calculated");
-    robotAngle += target;
- // gyro  
+    is_rotating = false;
+    rotateTo(total_angle);
+    setMotorSpeed(0, 0);
 
   }
-
 }
-
