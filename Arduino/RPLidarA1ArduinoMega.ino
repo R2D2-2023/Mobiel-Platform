@@ -63,15 +63,16 @@ void setMotorSpeed(float leftWheel, float rightWheel){
 
 float last_error = 0;
 void rotateTo(int target_angle){
-  if (abs(target_angle - getAngle()) > 1 || abs(last_error - (target_angle - getAngle())) > 0.5) {
+  float angle = getAngle();
+  if (abs(target_angle - angle) > 1 || abs(last_error - (target_angle - angle)) > 0.5) {
     input = 0;
-    last_error = target_angle - getAngle();
-    float speed = checkSpeed(target_angle);
-    if (getAngle() < target_angle) {
-      setMotorSpeed(speed, 0);
+    last_error = target_angle - angle;
+    // float speed = checkSpeed(target_angle);
+    if (angle < target_angle) {
+      setMotorSpeed(1000, 0);
     } 
     else {
-      setMotorSpeed(0, speed);
+      setMotorSpeed(0, 1000);
     }
   } 
   else {
@@ -82,35 +83,17 @@ void rotateTo(int target_angle){
 void Motor() {
   // leftMotor.setSpeed(1000 - left*3.9);
   // rightMotor.setSpeed((1000 - right*3.9)*-1);
-  leftMotor.setSpeed(4*(255 - left));
-  rightMotor.setSpeed((255 - right)*-4);
+  leftMotor.setSpeed((1000 - left));
+  rightMotor.setSpeed((1000 - right)*-1);
 }
 
 
 void Gyro(){
   //rotateTo(0);
-  if (go){
-    if (Serial.available() > 0) {
-    // if(input != 0){
-      // float angle = input;
-      float angle = Serial.parseFloat();
-      if (angle >= -90 && angle <= 90) {
-      if (!is_rotating) {
-        total_angle = getAngle() + angle;
-        is_rotating = true;
-        // input = 0;
-        rotateTo(total_angle);
-      } else {
-
-      total_angle = getAngle();
-      rotateTo(total_angle);
-      }
-      }
-    } else {
-      is_rotating = false;
-      rotateTo(total_angle);
+  if (go){    
+    if (getAngle() != 0){
+      rotateTo(0);
     }
-  
   }
 }
 
@@ -162,7 +145,8 @@ void loop () {
   //   previous_millis = current_millis;
   // }
   // setMotorSpeed(0,0);
-  // Motor();
+  // Motor(); 
+// rotateTo(90);   
   Gyro();
   // Wire.onReceive(receiveEvent);
   leftMotor.runSpeed();
