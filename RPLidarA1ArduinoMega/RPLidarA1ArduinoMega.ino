@@ -1,4 +1,3 @@
-// #include <LSM303.h>
 #include <Wire.h>
 #include <RPLidar.h>
 #include <MPU6050_light.h>
@@ -13,12 +12,37 @@
 const int base_speed = 1000;
 float last_error = 0;
 
+int period = 2000;
+unsigned long time_now = 0;
+
+unsigned long previous_millis = 0;
+
+enum class robotState {DRIVE, STOP, BASE_IN, BASE_OUT, IDLE, MEASURE};
+robotState currentState = robotState::DRIVE;
+
+int counter = 0;
+int new_speed = 0;
+int speed = 0;
+
 MPU6050 mpu(Wire);
 AccelStepper leftMotor(AccelStepper::DRIVER, LEFT_STEP_PIN, LEFT_DIR_PIN);
 AccelStepper rightMotor(AccelStepper::DRIVER, RIGHT_STEP_PIN, RIGHT_DIR_PIN);
 
 bool go = true;
 
+
+bool checkLidar(){
+  if (Serial.available() > 0) {
+    String data = Serial.readStringUntil('\n');
+    Serial.println(data);
+      if (data == "1"){
+        currentState = robotState::STOP;      }
+      else if(data == "0"){
+        currentState = robotState::DRIVE;  
+      }
+  }
+
+}
 
 float getAngle(){
   return mpu.getAngleZ();
@@ -34,10 +58,10 @@ void rotateTo(int target_angle){
   if (abs(target_angle - angle) > 1 || abs(last_error - (target_angle - angle)) > 0.5) {
     last_error = target_angle - angle;
     if (angle < target_angle) {
-      setMotorSpeed(1000, 0);
+      setMotorSpeed(2000, 0);
     } 
     else {
-      setMotorSpeed(0, 1000);
+      setMotorSpeed(0, 2000);
     }
   } 
   else {
@@ -64,13 +88,6 @@ void setup () {
   rightMotor.setMaxSpeed(base_speed);
 }
 
-unsigned long previous_millis = 0;
-enum class robotState {DRIVE, STOP, BASE_IN, BASE_OUT};
-robotState currentState = robotState::DRIVE;
-
-int counter = 0;
-int new_speed = 0;
-int speed = 0;
 
 void loop () {
   mpu.update();
@@ -84,28 +101,19 @@ void loop () {
     speed = new_speed;
   }
 
-  // robotState();
-  // Serial.println(counter);
   switch (currentState){
     case robotState::DRIVE:
       new_speed = 1000;
+      checkLidar();
       rotateTo(0);
-      counter++;
-      if (counter > 1000){
-        currentState = robotState::STOP;
-        counter = 0;
-      }
+    
       break;
 
     case robotState::STOP:
+      new_speed = 0;
       leftMotor.stop();
       rightMotor.stop();
-      setMotorSpeed(1000,1000);
-      counter++;
-      if (counter > 1000){
-        currentState = robotState::BASE_IN;
-        counter = 0;
-      }
+     
       break;
     
 
@@ -113,10 +121,9 @@ void loop () {
       new_speed = 300;
       rotateTo(0);  
       
-      counter++;
-      if (counter > 1000){
+      if(millis() >= time_now + period){
+        time_now += period;
         currentState = robotState::BASE_OUT;
-        counter = 0;
       }
       break;
 
@@ -124,27 +131,29 @@ void loop () {
     case robotState::BASE_OUT:
       new_speed = 300;
       setMotorSpeed(2000, 2000);
-      counter++;
-      if (counter > 1000){
+
+      if(millis() >= time_now + period){
+        time_now += period;
         currentState = robotState::DRIVE;
-        counter = 0;
       }
       break;
-    // case BASE_OUT:
-
     
+    case robotState::IDLE:
+      leftMotor.stop();
+      rightMotor.stop();
+      // need signal for when the robots needs to go to BASE_OUT
+      currentState = robotState::BASE_OUT;
+      break;
+
+      case robotState::MEASURE:
+      leftMotor.stop();
+      rightMotor.stop();
+      // CODE for measuring
+      currentState = robotState::DRIVE;
+      break;
+   
   }
-  //case1 Rijden
-  
 
-  //case2 Stoppen
-
-  // //case3 Base station
-  // leftMotor.setMaxSpeed(100);
-  // rightMotor.setMaxSpeed(100);
-
-  // //case4 Base station uitrijden
-  // setMotorSpeed(-1000, -1000);
 
 
 
