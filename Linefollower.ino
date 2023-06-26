@@ -20,13 +20,16 @@ void loop(){
 
   if(Sensor3 == HIGH && Sensor2 == LOW && Sensor1 == LOW){
     Serial.println("right");
+    setMotorSpeed(1000, 500 );
   }
 
   else if (Sensor3 == LOW && Sensor2 == LOW && Sensor1 == HIGH){
     Serial.println("left");
+    setMotorSpeed(500, 1000 );
   }
 
   else{
     Serial.println("good");
+    setMotorSpeed(500, 500 );
   }
 }
