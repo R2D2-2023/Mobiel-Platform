@@ -17,7 +17,7 @@ unsigned long time_now = 0;
 unsigned long previous_millis = 0;
 
 enum class robotState {DRIVE, STOP, BASE_IN, BASE_OUT, IDLE, MEASURE};
-robotState currentState = robotState::DRIVE;
+robotState currentState = robotState::STOP;
 
 int counter = 0;
 int new_speed = 0;
@@ -28,7 +28,7 @@ AccelStepper leftMotor(AccelStepper::DRIVER, LEFT_STEP_PIN, LEFT_DIR_PIN);
 AccelStepper rightMotor(AccelStepper::DRIVER, RIGHT_STEP_PIN, RIGHT_DIR_PIN);
 
 bool go = true;
-
+bool booted = false;
 
 bool checkLidar(){
   if (Serial.available() > 0) {
@@ -93,7 +93,16 @@ void loop () {
   // Gyro();
   leftMotor.runSpeed();
   rightMotor.runSpeed();
-  
+  if (booted == false){
+    if (Serial.available() > 0){
+      String data_2 = Serial.readStringUntil('\n');
+      if (data_2 == "BOOTED"){
+         Serial.println("HEARD");
+        currentState = robotState::DRIVE;
+        booted = true;
+      }
+    }
+  }
   if (speed != new_speed){
     leftMotor.setMaxSpeed(new_speed);
     rightMotor.setMaxSpeed(new_speed);
