@@ -8,7 +8,6 @@
 #define RIGHT_STEP_PIN 4
 #define RIGHT_DIR_PIN  5
 #define RPLIDAR_MOTOR 10
-
 const int base_speed = 1000;
 float last_error = 0;
 
@@ -101,19 +100,20 @@ void loop () {
     speed = new_speed;
   }
 
+  // robotState();
+  // Serial.println(counter);
   switch (currentState){
     case robotState::DRIVE:
       new_speed = 1000;
       checkLidar();
       rotateTo(0);
-    
       break;
 
     case robotState::STOP:
       new_speed = 0;
       leftMotor.stop();
       rightMotor.stop();
-     
+      checkLidar();
       break;
     
 
@@ -132,10 +132,7 @@ void loop () {
       new_speed = 300;
       setMotorSpeed(2000, 2000);
 
-      if(millis() >= time_now + period){
-        time_now += period;
-        currentState = robotState::DRIVE;
-      }
+      
       break;
     
     case robotState::IDLE:
