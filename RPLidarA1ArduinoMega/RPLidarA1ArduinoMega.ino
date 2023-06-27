@@ -29,6 +29,10 @@ AccelStepper rightMotor(AccelStepper::DRIVER, RIGHT_STEP_PIN, RIGHT_DIR_PIN);
 
 bool go = true;
 
+int Sensor1 = 0;
+int Sensor2 = 0;
+int Sensor3 = 0;
+
 
 bool checkLidar(){
   if (Serial.available() > 0) {
@@ -100,6 +104,10 @@ void setup () {
   rightMotor.setAcceleration(2000);
   leftMotor.setMaxSpeed(base_speed);
   rightMotor.setMaxSpeed(base_speed);
+
+  pinMode(Sensor1, INPUT);
+  pinMode(Sensor2, INPUT);
+  pinMode(Sensor3, INPUT);
 }
 
 void loop () {
@@ -130,14 +138,28 @@ void loop () {
     
 
     case robotState::BASE_IN:
-      new_speed = 300;
-      rotateTo(0);  
-      
-      if(millis() >= time_now + period){
-        time_now += period;
-        currentState = robotState::BASE_OUT;
+      while (true){
+        Sensor1 = digitalRead(8);
+        Sensor2 = digitalRead(9);
+        Sensor3 = digitalRead(10);
+
+        if(Sensor3 == HIGH && Sensor2 == LOW && Sensor1 == LOW){
+          setMotorSpeed(500, 750 );
+        }
+
+        else if (Sensor3 == LOW && Sensor2 == LOW && Sensor1 == HIGH){
+          setMotorSpeed(750, 500 );
+        }
+
+        else if (Sensor3 == LOW && Sensor2 == HIGH && Sensor1 == LOW){
+          setMotorSpeed(500, 500 );
+        }
+
+        else{
+          currenstate = robotstate::IDLE;
+          break;
+        }
       }
-      break;
 
 
     case robotState::BASE_OUT:
@@ -161,8 +183,4 @@ void loop () {
       break;
    
   }
-
-
-
-
 }
