@@ -78,6 +78,21 @@ void Gyro(){
 
 void setup () {
   Serial.begin(9600);
+
+// Setup climate sensors//
+
+//  Serial1.begin(115200);
+//  int result = climate_sensors.setUpSensors();
+//  if (result)
+//  {
+//    Serial1.print(result);
+//    Serial1.print(" ");
+//    Serial1.println("unlucky bro");
+//    while (1){};
+//  }
+
+
+// Setup mpu/steppermotors //
   mpu.begin();
   delay(1000);
   mpu.calcOffsets();
@@ -86,7 +101,6 @@ void setup () {
   leftMotor.setMaxSpeed(base_speed);
   rightMotor.setMaxSpeed(base_speed);
 }
-
 
 void loop () {
   mpu.update();
@@ -100,8 +114,6 @@ void loop () {
     speed = new_speed;
   }
 
-  // robotState();
-  // Serial.println(counter);
   switch (currentState){
     case robotState::DRIVE:
       new_speed = 1000;
@@ -131,8 +143,6 @@ void loop () {
     case robotState::BASE_OUT:
       new_speed = 300;
       setMotorSpeed(2000, 2000);
-
-      
       break;
     
     case robotState::IDLE:
@@ -146,6 +156,7 @@ void loop () {
       leftMotor.stop();
       rightMotor.stop();
       // CODE for measuring
+      // climate_sensors.doMeasurements();
       currentState = robotState::DRIVE;
       break;
    
