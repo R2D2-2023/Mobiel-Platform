@@ -22,6 +22,9 @@ robotState currentState = robotState::DRIVE;
 int counter = 0;
 int new_speed = 0;
 int speed = 0;
+float angle =0;
+String currentDirection = "N";
+String lastAngle = "N";
 
 MPU6050 mpu(Wire);
 AccelStepper leftMotor(AccelStepper::DRIVER, LEFT_STEP_PIN, LEFT_DIR_PIN);
@@ -52,10 +55,31 @@ void setMotorSpeed(float leftWheel, float rightWheel){
   rightMotor.setSpeed((1000 - rightWheel)*-1);
 }
 
+void sendCompass() {
+    if( angle < 45 || angle > 315 ) {
+      currentDirection = "N";
+      Serial.println("N");
+    }
+    else if(angle > 45 && angle < 135 ) {
+      currentDirection = "E";
+      Serial.println("E");
+    }
+    else if(angle > 135 && angle < 225 ) {
+      currentDirection = "S";
+      Serial.println("S");
+    }
+    else if(angle > 225 && angle < 315 ) {
+      currentDirection = "W";
+      Serial.println("W");
+    }
+    lastAngle = currentDirection;
+}
+
 void rotateTo(int target_angle){
-  float angle = getAngle();
+  angle = getAngle();
   if (abs(target_angle - angle) > 1 || abs(last_error - (target_angle - angle)) > 0.5) {
     last_error = target_angle - angle;
+        
     if (angle < target_angle) {
       setMotorSpeed(2000, 0);
     } 
@@ -118,6 +142,10 @@ void loop () {
     case robotState::DRIVE:
       new_speed = 1000;
       checkLidar();
+      if(lastAngle != currentDirection){
+         sendCompass();
+       }
+     
       rotateTo(0);
       break;
 
@@ -132,11 +160,7 @@ void loop () {
     case robotState::BASE_IN:
       new_speed = 300;
       rotateTo(0);  
-      
-      if(millis() >= time_now + period){
-        time_now += period;
-        currentState = robotState::BASE_OUT;
-      }
+
       break;
 
 
