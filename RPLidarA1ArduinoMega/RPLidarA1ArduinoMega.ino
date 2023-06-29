@@ -22,7 +22,8 @@ robotState currentState = robotState::DRIVE;
 int new_speed = 0;
 int current_speed = 0;
 float angle =0;
-String currentDirection = "N";
+int right_degrees = 0;
+String currentDirection = "P";
 String lastAngle = "P";
 
 MPU6050 mpu(Wire);
@@ -35,7 +36,7 @@ bool go = true;
 bool checkLidar(){
   if (Serial.available() > 0) {
     String data = Serial.readStringUntil('\n');
-    Serial.println(data);
+//    Serial.println(data);
       if (data == "1"){
         currentState = robotState::STOP;      }
       else if(data == "0"){
@@ -51,7 +52,7 @@ float getAngle(){
 
 void setMotorSpeed(float leftWheel, float rightWheel){
   leftMotor.setSpeed(1000 - leftWheel);
-  rightMotor.setSpeed((1000 - rightWheel)*-1);
+  rightMotor.setSpeed((1000 - rightWheel));
 }
 
 //void returnAngle(int given_angle){
@@ -60,52 +61,62 @@ void setMotorSpeed(float leftWheel, float rightWheel){
 int num = 0;
 
 void sendCompass() {
-
-    if(angle < 0 ){
-      angle = 360 - abs(angle) ;
-     }
-    int angle_360 = int(angle) %360;
-
-    if (angle > 359){
-      angle = 0;
-      }
-    
-    
+  
 //    Serial.println(angle);
-    if( angle <= 45 || angle >= 315) {
-//      Serial.println("N");
+ 
+    if(angle < 0 ){
+       right_degrees = 360 - (int(angle) %360);
+     }
+     else{
+      right_degrees = int(angle)%360;
+     }
+     
+
+    
+
+    Serial.println(right_degrees);
+    if( right_degrees <= 45 || right_degrees >= 315) {
+      currentDirection = "N";
       if (lastAngle != currentDirection){
-        currentDirection = "N";
         Serial.println("N");
+        Serial.println(right_degrees);
+        lastAngle = currentDirection;
+        
         
       }
     }
-     else if((angle > 45 || angle <= 135) ) {
+     else if(right_degrees > 45 && right_degrees < 135 ) {
+          currentDirection = "W";
        if(lastAngle != currentDirection){
-          currentDirection = "E";
-          Serial.println("E");
+          Serial.println("W");
+          Serial.println(right_degrees);
+          lastAngle = currentDirection;
            
        }
     }
-     else if((angle > 135 || angle <= 225) ) {
+     else if(right_degrees > 135 && right_degrees < 225) {
+      currentDirection = "S";
       if(lastAngle != currentDirection){
-        currentDirection = "S";
         Serial.println("S");
+        Serial.println(right_degrees);
+        lastAngle = currentDirection;
         
       }
     }
-     else if((angle > 225 || angle < 315) ) {
+     else if(right_degrees > 225 && right_degrees < 315 ) {
+      currentDirection = "E";
       if(lastAngle != currentDirection){
-        currentDirection = "W";
-        Serial.println("W");      
+        Serial.println("E");  
+        Serial.println(right_degrees);  
+        lastAngle = currentDirection;  
         
       }
     }
-    lastAngle = currentDirection;
 }
 
 void rotateTo(int target_angle){
   angle = getAngle();
+
   if (abs(target_angle - angle) > 1 || abs(last_error - (target_angle - angle)) > 0.5) {
     last_error = target_angle - angle;
         
@@ -169,21 +180,19 @@ void loop () {
 
   switch (currentState){
     case robotState::DRIVE:
-      new_speed = 1000
-      leftMotor.setSpeed(2000);
-      rightMotor.setSpeed(2000);
-
+      new_speed = 3000;
+      leftMotor.setSpeed(3000);
+      rightMotor.setSpeed(3000);
       checkLidar();
-
-      sendCompass();
-
       rotateTo(0);
+      sendCompass();
       break;
 
     case robotState::STOP:
       new_speed = 0;
       leftMotor.stop();
       rightMotor.stop();
+      sendCompass();
       checkLidar();
       break;
     
