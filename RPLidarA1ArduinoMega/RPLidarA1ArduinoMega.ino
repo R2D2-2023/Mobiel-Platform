@@ -156,7 +156,7 @@ void loop () {
         }
 
         else{
-          currenstate = robotstate::IDLE;
+          currentState = robotState::IDLE;
           break;
         }
       }
