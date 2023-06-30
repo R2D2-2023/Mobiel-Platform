@@ -16,19 +16,19 @@ unsigned long time_now = 0;
 
 unsigned long previous_millis = 0;
 
-enum class robotState {DRIVE, STOP, BASE_IN, BASE_OUT, IDLE, MEASURE};
-robotState currentState = robotState::DRIVE;
+enum class RobotState {DRIVE, STOP, BASE_IN, BASE_OUT, IDLE, MEASURE};
+RobotState current_state = RobotState::DRIVE;
 
 int new_speed = 0;
 int current_speed = 0;
 float angle =0;
 int right_degrees = 0;
-String currentDirection = "P";
-String lastAngle = "P";
+String current_direction = "P";
+String last_direction = "P";
 
 MPU6050 mpu(Wire);
-AccelStepper leftMotor(AccelStepper::DRIVER, LEFT_STEP_PIN, LEFT_DIR_PIN);
-AccelStepper rightMotor(AccelStepper::DRIVER, RIGHT_STEP_PIN, RIGHT_DIR_PIN);
+AccelStepper left_motor(AccelStepper::DRIVER, LEFT_STEP_PIN, LEFT_DIR_PIN);
+AccelStepper right_motor(AccelStepper::DRIVER, RIGHT_STEP_PIN, RIGHT_DIR_PIN);
 
 bool go = true;
 
@@ -42,21 +42,32 @@ bool checkLidar(){
     String data = Serial.readStringUntil('\n');
 //    Serial.println(data);
       if (data == "1"){
-        currentState = robotState::STOP;      }
+        current_state = RobotState::STOP;      }
       else if(data == "0"){
-        currentState = robotState::DRIVE;  
+        current_state = RobotState::DRIVE;  
       }
   }
 
 }
 
+
+/**
+         * @brief gets the Yaw of the MPU6050
+         */
 float getAngle(){
   return mpu.getAngleZ();
 }
 
-void setMotorSpeed(float leftWheel, float rightWheel){
-  leftMotor.setSpeed(1000 - leftWheel);
-  rightMotor.setSpeed((1000 - rightWheel));
+
+/**
+         * @brief sets the motor speed for both motors
+         * 
+         * @param left_wheel
+         * @param right_wheel 
+         */
+void setMotorSpeed(float left_wheel, float right_wheel){
+  left_motor.setSpeed(1000 - left_wheel);
+  right_motor.setSpeed((1000 - right_wheel));
 }
 
 //void returnAngle(int given_angle){
@@ -64,7 +75,13 @@ void setMotorSpeed(float leftWheel, float rightWheel){
 //}
 int num = 0;
 
-void sendCompass() {
+
+
+/**
+         * @brief This function sends cardinal directions to PI
+         * 
+         */
+void sendCardinal() {
   
 //    Serial.println(angle);
  
@@ -80,39 +97,39 @@ void sendCompass() {
 
     Serial.println(right_degrees);
     if( right_degrees <= 45 || right_degrees >= 315) {
-      currentDirection = "N";
-      if (lastAngle != currentDirection){
+      current_direction = "N";
+      if (last_direction != current_direction){
         Serial.println("N");
         Serial.println(right_degrees);
-        lastAngle = currentDirection;
+        last_direction = current_direction;
         
         
       }
     }
      else if(right_degrees > 45 && right_degrees < 135 ) {
-          currentDirection = "W";
-       if(lastAngle != currentDirection){
+          current_direction = "W";
+       if(last_direction != current_direction){
           Serial.println("W");
           Serial.println(right_degrees);
-          lastAngle = currentDirection;
+          last_direction = current_direction;
            
        }
     }
      else if(right_degrees > 135 && right_degrees < 225) {
-      currentDirection = "S";
-      if(lastAngle != currentDirection){
+      current_direction = "S";
+      if(last_direction != current_direction){
         Serial.println("S");
         Serial.println(right_degrees);
-        lastAngle = currentDirection;
+        last_direction = current_direction;
         
       }
     }
      else if(right_degrees > 225 && right_degrees < 315 ) {
-      currentDirection = "E";
-      if(lastAngle != currentDirection){
+      current_direction = "E";
+      if(last_direction != current_direction){
         Serial.println("E");  
         Serial.println(right_degrees);  
-        lastAngle = currentDirection;  
+        last_direction = current_direction;  
         
       }
     }
@@ -172,41 +189,44 @@ void setup () {
   pinMode(Sensor1, INPUT);
   pinMode(Sensor2, INPUT);
   pinMode(Sensor3, INPUT);
+  left_motor.setAcceleration(2000);
+  right_motor.setAcceleration(2000);
+  left_motor.setMaxSpeed(base_speed);
+  right_motor.setMaxSpeed(base_speed);
 }
 
 void loop () {
   mpu.update();
   // Gyro();
-  leftMotor.runSpeed();
-  rightMotor.runSpeed();
+  left_motor.runSpeed();
+  right_motor.runSpeed();
   
   if (current_speed != new_speed){
-    leftMotor.setMaxSpeed(new_speed);
-    rightMotor.setMaxSpeed(new_speed);
+    left_motor.setMaxSpeed(new_speed);
+    right_motor.setMaxSpeed(new_speed);
     current_speed = new_speed;
   }
 
-  switch (currentState){
-    case robotState::DRIVE:
+  switch (current_state){
+    case RobotState::DRIVE:
       new_speed = 3000;
-      leftMotor.setSpeed(3000);
-      rightMotor.setSpeed(3000);
+      left_motor.setSpeed(3000);
+      right_motor.setSpeed(3000);
       checkLidar();
       rotateTo(0);
-      sendCompass();
+      sendCardinal();
       break;
 
-    case robotState::STOP:
+    case RobotState::STOP:
       new_speed = 0;
-      leftMotor.stop();
-      rightMotor.stop();
-      sendCompass();
+      left_motor.stop();
+      right_motor.stop();
+      sendCardinal();
       checkLidar();
       break;
     
 
     case robotState::BASE_IN:
-<<<<<<< HEAD
       while (true){
         Sensor1 = digitalRead(8);
         Sensor2 = digitalRead(9);
@@ -229,32 +249,26 @@ void loop () {
           break;
         }
       }
-=======
-      new_speed = 300;
-      rotateTo(0);  
-
-      break;
->>>>>>> 5ba17b64a936efad816a948b8e770bcfec513faa
 
 
-    case robotState::BASE_OUT:
+    case RobotState::BASE_OUT:
       new_speed = 300;
       setMotorSpeed(2000, 2000);
       break;
     
-    case robotState::IDLE:
-      leftMotor.stop();
-      rightMotor.stop();
+    case RobotState::IDLE:
+      left_motor.stop();
+      right_motor.stop();
       // need signal for when the robots needs to go to BASE_OUT
-      currentState = robotState::BASE_OUT;
+      current_state = RobotState::BASE_OUT;
       break;
 
-      case robotState::MEASURE:
-      leftMotor.stop();
-      rightMotor.stop();
+      case RobotState::MEASURE:
+      left_motor.stop();
+      right_motor.stop();
       // CODE for measuring
       // climate_sensors.doMeasurements();
-      currentState = robotState::DRIVE;
+      current_state = RobotState::DRIVE;
       break;
    
   }
