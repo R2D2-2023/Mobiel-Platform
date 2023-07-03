@@ -142,14 +142,14 @@ void rotateTo(int target_angle){
     last_error = target_angle - angle;
         
     if (angle < target_angle) {
-      setMotorSpeed(2000, 0);
+      setMotorSpeed(base_speed, 0);
     } 
     else {
-      setMotorSpeed(0, 2000);
+      setMotorSpeed(0, base_speed);
     }
   } 
   else {
-   setMotorSpeed(0, 0);
+   setMotorSpeed(base_speed, base_speed);
   }
 }
 
@@ -181,10 +181,10 @@ void setup () {
   mpu.begin();
   delay(1000);
   mpu.calcOffsets();
-  leftMotor.setAcceleration(2000);
-  rightMotor.setAcceleration(2000);
-  leftMotor.setMaxSpeed(base_speed);
-  rightMotor.setMaxSpeed(base_speed);
+  left_motor.setAcceleration(2000);
+  right_motor.setAcceleration(2000);
+  left_motor.setMaxSpeed(base_speed);
+  right_motor.setMaxSpeed(base_speed);
 
   pinMode(Sensor1, INPUT);
   pinMode(Sensor2, INPUT);
@@ -226,7 +226,7 @@ void loop () {
       break;
     
 
-    case robotState::BASE_IN:
+    case RobotState::BASE_IN:
       while (true){
         Sensor1 = digitalRead(8);
         Sensor2 = digitalRead(9);
@@ -245,7 +245,7 @@ void loop () {
         }
 
         else{
-          currentState = robotState::IDLE;
+          current_state = RobotState::IDLE;
           break;
         }
       }
