@@ -1,10 +1,11 @@
 #include "platform.hpp"
 
+
 Platform::Platform(int left_step_pin, int left_dir_pin, int right_step_pin, int right_dir_pin, int base_speed) :
   mpu(Wire),
   left_motor(AccelStepper::DRIVER, left_step_pin, left_dir_pin),
   right_motor(AccelStepper::DRIVER, right_step_pin, right_dir_pin),
-  current_state(RobotState::DRIVE),
+  current_state(RobotState::BASE_IN),
   base_speed(base_speed),
   last_error(0),
   period(2000),
@@ -21,20 +22,11 @@ Platform::Platform(int left_step_pin, int left_dir_pin, int right_step_pin, int 
   sensor_3(0)
 {}
 
+
 void Platform::setup(){
   Serial.begin(9600);
-  // Setup climate sensors//
-
-//  Serial1.begin(115200);
-//  int result = climate_sensors.setUpSensors();
-//  if (result)
-//  {
-//    Serial1.print(result);
-//    Serial1.print(" ");
-//    Serial1.println("unlucky bro");
-//    while (1){};
-//  }
-
+  Serial2.begin(57600);
+  Serial3.begin(9600);
 
 // Setup mpu/steppermotors //
   mpu.begin();
@@ -48,18 +40,20 @@ void Platform::setup(){
   right_motor.setAcceleration(2000);
   left_motor.setMaxSpeed(base_speed);
   right_motor.setMaxSpeed(base_speed);
+
 }
 
 void Platform::loop(){
   mpu.update();
   left_motor.runSpeed();
   right_motor.runSpeed();
+  climate_sensor.sendLiveLocationValues();
+
   
   if (current_speed != new_speed){
     left_motor.setMaxSpeed(new_speed);
     right_motor.setMaxSpeed(new_speed);
     current_speed = new_speed;
-    Serial.println(new_speed);
   }
 
   switch (current_state){
@@ -82,28 +76,37 @@ void Platform::loop(){
     
 
     case RobotState::BASE_IN:
-      while (true){
         sensor_1 = digitalRead(8);
         sensor_2 = digitalRead(9);
         sensor_3 = digitalRead(10);
+        
 
-        if(sensor_3 == HIGH && sensor_2 == LOW && sensor_1 == LOW){
-          setMotorSpeed(500, 750 );
+        if(sensor_3 == LOW && sensor_2 == HIGH && sensor_1 == HIGH){
+          left_motor.setSpeed(0);
+          right_motor.setSpeed(2000);
+          Serial.println("Right");
+          break;
         }
 
-        else if (sensor_3 == LOW && sensor_2 == LOW && sensor_1 == HIGH){
-          setMotorSpeed(750, 500 );
+        else if (sensor_3 == HIGH && sensor_2 == LOW && sensor_1 == HIGH){
+          left_motor.setSpeed(-2000);
+          right_motor.setSpeed(0);
+          Serial.println("Left");
+          break;
         }
 
-        else if (sensor_3 == LOW && sensor_2 == HIGH && sensor_1 == LOW){
-          setMotorSpeed(500, 500 );
+        else if (sensor_3 == HIGH && sensor_2 == HIGH && sensor_1 == LOW){
+          left_motor.setSpeed(-2000);
+          right_motor.setSpeed(2000);
+          Serial.println("mid");
+          break;
         }
 
         else{
-          current_state = RobotState::IDLE;
+        //   current_state = RobotState::IDLE;
           break;
         }
-      }
+
 
 
     case RobotState::BASE_OUT:
@@ -121,8 +124,8 @@ void Platform::loop(){
       case RobotState::MEASURE:
       left_motor.stop();
       right_motor.stop();
-      // CODE for measuring
-      // climate_sensor_s.doMeasurements();
+      climate_sensor.setUpSensors();
+      climate_sensor.doMeasurements();
       current_state = RobotState::DRIVE;
       break;
   }
@@ -191,7 +194,6 @@ void Platform::rotateTo(int target_angle){
   float angle = getAngle();
   if (abs(target_angle - angle) > 1 || abs(last_error - (target_angle - angle)) > 0.5) {
     last_error = target_angle - angle;
-    // float speed = checkSpeed(target_angle);
     if (angle < target_angle) {
       setMotorSpeed(2000, 2000);
     } 

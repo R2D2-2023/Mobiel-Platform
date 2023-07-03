@@ -6,6 +6,7 @@
 #include <string.h>
 #include <Wire.h>
 #include <MPU6050_light.h>
+#include "sensors.hpp"
 
 class Platform {
 public:
@@ -37,6 +38,7 @@ private:
   int sensor_1;
   int sensor_2;
   int sensor_3;
+  Sensors climate_sensor = Sensors();
 
   void checkSerial();
   float getAngle();
