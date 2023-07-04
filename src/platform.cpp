@@ -24,7 +24,7 @@ Platform::Platform(int left_step_pin, int left_dir_pin, int right_step_pin, int 
 
 
 void Platform::setup(){
-  Serial.begin(9600);
+  Serial.begin(115200);
   Serial2.begin(57600);
   Serial3.begin(9600);
 
@@ -115,7 +115,12 @@ void Platform::loop(){
       left_motor.stop();
       right_motor.stop();
       // need signal for when the robots needs to go to BASE_OUT
-      current_state = RobotState::BASE_OUT;
+      bool is_done = climate_sensor.isDoneCharging();
+      if (is_done){
+        Serial.println("hey");
+        current_state = RobotState::BASE_OUT;
+        delay(30000);
+      }
       break;
 
       case RobotState::MEASURE:

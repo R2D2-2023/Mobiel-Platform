@@ -205,3 +205,20 @@ void Sensors::checkValues(){
      check_values_byte_1 |= (0x01 << 7); //raise bit 7 of byte 1
     }
 }
+
+bool Sensors::isDoneCharging(){
+    for (int i = 0; i < 5; i++)
+    {
+        float voltage = INA.getBusVoltage() * 10;
+        volt_filter.addDatapoint(voltage);
+        delay(500);
+    }
+    unsigned int volt = volt_filter.getValue();
+    if (volt > 118){ // 11.8v
+        // very professional communication to base station to let them know its done charging
+        return true;
+    } else {
+        delay(10000); // 10 seconds delay since voltage wont go much higher quickly
+        return false;
+    }
+}
