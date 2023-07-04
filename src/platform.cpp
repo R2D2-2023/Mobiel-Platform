@@ -5,7 +5,7 @@ Platform::Platform(int left_step_pin, int left_dir_pin, int right_step_pin, int 
   mpu(Wire),
   left_motor(AccelStepper::DRIVER, left_step_pin, left_dir_pin),
   right_motor(AccelStepper::DRIVER, right_step_pin, right_dir_pin),
-  current_state(RobotState::MEASURE),
+  current_state(RobotState::DRIVE),
   base_speed(base_speed),
   last_error(0),
   period(2000),
@@ -61,9 +61,9 @@ void Platform::loop(){
       new_speed = 3000;
       left_motor.setSpeed(3000);
       right_motor.setSpeed(3000);
-      checkSerial();
+      // checkSerial();
       rotateTo(0);
-      sendCardinal();
+      // sendCardinal();
       break;
 
     case RobotState::STOP:
@@ -150,35 +150,36 @@ void Platform::setMotorSpeed(float left_wheel, float right_wheel) {
 }
 
 void Platform::sendCardinal() {
+  
+
+  right_degrees = int(angle) % 360;
     if (angle < 0) {
-       right_degrees = 360 - (int(angle) % 360);
+       right_degrees += 360;
      }
-     else {
-      right_degrees = int(angle) % 360;
-     }
-     
-    if (right_degrees <= 45 || right_degrees >= 315) {
+    //  Serial.println(right_degrees);
+    if (right_degrees <= 10 || right_degrees >= 350) {
       current_direction = "N";
       if (last_direction != current_direction) {
         Serial.println("N");
+        
         last_direction = current_direction;
       }
     }
-    else if (right_degrees > 45 && right_degrees < 135) {
+    else if (right_degrees > 80 && right_degrees < 100) {
       current_direction = "W";
       if (last_direction != current_direction) {
         Serial.println("W");
         last_direction = current_direction;
       }
     }
-    else if (right_degrees > 135 && right_degrees < 225) {
+    else if (right_degrees > 170 && right_degrees < 190) {
       current_direction = "S";
       if (last_direction != current_direction) {
         Serial.println("S");
         last_direction = current_direction;
       }
     }
-    else if (right_degrees > 225 && right_degrees < 315) {
+    else if (right_degrees > 260 && right_degrees < 280) {
       current_direction = "E";
       if (last_direction != current_direction) {
         Serial.println("E");  
@@ -188,7 +189,7 @@ void Platform::sendCardinal() {
 }
 
 void Platform::rotateTo(int target_angle){
-  float angle = getAngle();
+  angle = getAngle();
   if (abs(target_angle - angle) > 1 || abs(last_error - (target_angle - angle)) > 0.5) {
     last_error = target_angle - angle;
     if (angle < target_angle) {
@@ -202,4 +203,3 @@ void Platform::rotateTo(int target_angle){
    setMotorSpeed(2000, 0);
   }
 }
-
