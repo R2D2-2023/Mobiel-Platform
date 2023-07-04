@@ -10,7 +10,15 @@
 class Platform {
 public:
   Platform(int left_step_pin, int left_dir_pin, int right_step_pin, int right_dir_pin, int base_speed);
+  /**
+   * @brief setup for arduino 
+   * 
+   */
   void setup();
+  /**
+   * @brief main loop for the arduino
+   * 
+   */
   void loop();
 private:
   MPU6050 mpu;
@@ -37,11 +45,35 @@ private:
   int sensor_1;
   int sensor_2;
   int sensor_3;
-
+  /**
+   * @brief check the serial of the LiDAR and look if the lidar detects an object
+   * 
+   */
   void checkSerial();
+
+  
+/**
+         * @brief gets the Yaw of the MPU6050
+         */
   float getAngle();
+  
+/**
+         * @brief sets the motor speed for both motors
+         * 
+         * @param left_wheel
+         * @param right_wheel 
+         */
   void setMotorSpeed(float left_wheel, float right_wheel);
+  /**
+         * @brief This function sends cardinal directions to PI
+         * 
+         */
   void sendCardinal();
+  /**
+   * @brief rotate the motors so the platform  corrects its self/turn the car to the designated angle
+   * 
+   * @param target_angle 
+   */
   void rotateTo(int target_angle);
 };
 

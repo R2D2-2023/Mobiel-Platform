@@ -8,11 +8,12 @@
         {
             "name": "PlatformIO",
             "includePath": [
-                "d:/School/Jaar2/blok3/VISN/Mobiel-Platform/include",
-                "d:/School/Jaar2/blok3/VISN/Mobiel-Platform/src",
-                "d:/School/Jaar2/blok3/VISN/Mobiel-Platform/.pio/libdeps/megaatmega2560/AccelStepper/src",
-                "d:/School/Jaar2/blok3/VISN/Mobiel-Platform/.pio/libdeps/megaatmega2560/MPU6050_light/src",
+                "d:/School/Jaar2/blok3/VISN/Mobiel-Platform/Mobile_Platform/include",
+                "d:/School/Jaar2/blok3/VISN/Mobiel-Platform/Mobile_Platform/src",
+                "d:/School/Jaar2/blok3/VISN/Mobiel-Platform/Mobile_Platform/.pio/libdeps/megaatmega2560/AccelStepper/src",
+                "d:/School/Jaar2/blok3/VISN/Mobiel-Platform/Mobile_Platform/.pio/libdeps/megaatmega2560/MPU6050_light/src",
                 "C:/Users/kenes/.platformio/packages/framework-arduino-avr/libraries/Wire/src",
+                "d:/School/Jaar2/blok3/VISN/Mobiel-Platform/Mobile_Platform/.pio/libdeps/megaatmega2560/RPLidar _DanCrank fork_",
                 "C:/Users/kenes/.platformio/packages/framework-arduino-avr/cores/arduino",
                 "C:/Users/kenes/.platformio/packages/framework-arduino-avr/variants/mega",
                 "C:/Users/kenes/.platformio/packages/framework-arduino-avr/libraries/EEPROM/src",
@@ -24,11 +25,12 @@
             "browse": {
                 "limitSymbolsToIncludedHeaders": true,
                 "path": [
-                    "d:/School/Jaar2/blok3/VISN/Mobiel-Platform/include",
-                    "d:/School/Jaar2/blok3/VISN/Mobiel-Platform/src",
-                    "d:/School/Jaar2/blok3/VISN/Mobiel-Platform/.pio/libdeps/megaatmega2560/AccelStepper/src",
-                    "d:/School/Jaar2/blok3/VISN/Mobiel-Platform/.pio/libdeps/megaatmega2560/MPU6050_light/src",
+                    "d:/School/Jaar2/blok3/VISN/Mobiel-Platform/Mobile_Platform/include",
+                    "d:/School/Jaar2/blok3/VISN/Mobiel-Platform/Mobile_Platform/src",
+                    "d:/School/Jaar2/blok3/VISN/Mobiel-Platform/Mobile_Platform/.pio/libdeps/megaatmega2560/AccelStepper/src",
+                    "d:/School/Jaar2/blok3/VISN/Mobiel-Platform/Mobile_Platform/.pio/libdeps/megaatmega2560/MPU6050_light/src",
                     "C:/Users/kenes/.platformio/packages/framework-arduino-avr/libraries/Wire/src",
+                    "d:/School/Jaar2/blok3/VISN/Mobiel-Platform/Mobile_Platform/.pio/libdeps/megaatmega2560/RPLidar _DanCrank fork_",
                     "C:/Users/kenes/.platformio/packages/framework-arduino-avr/cores/arduino",
                     "C:/Users/kenes/.platformio/packages/framework-arduino-avr/variants/mega",
                     "C:/Users/kenes/.platformio/packages/framework-arduino-avr/libraries/EEPROM/src",
