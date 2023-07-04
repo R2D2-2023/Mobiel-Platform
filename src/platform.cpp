@@ -55,7 +55,7 @@ void Platform::loop(){
     right_motor.setMaxSpeed(new_speed);
     current_speed = new_speed;
   }
-
+  
   switch (current_state){
     case RobotState::DRIVE:
       new_speed = 3000;

@@ -86,11 +86,21 @@ private:
      * The Y location as given by position
      */
      String loc_y = "0";
+     	 /**
+     * @brief 
+     * The previous X location as given by position
+     */
+     String old_loc_x = "0";
+	 /**
+     * @brief 
+     * The previous Y location as given by position
+     */
+     String old_loc_y = "0";
 	 /**
      * @brief 
      * Bool to indicate if a location has been measured yet. 
      */
-     bool loc_measured = true;
+     bool loc_measured = false;
 
     //Error bytes
     uint8_t check_values_byte_0;
@@ -145,6 +155,7 @@ private:
 	void sendValues();
 	void checkValues();
 	void sendErrorByte();
+     bool isStuck();
 
 
 public:
