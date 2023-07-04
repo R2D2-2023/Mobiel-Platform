@@ -179,5 +179,10 @@ public:
      * Funtion sends live location
      */
      void sendLiveLocationValues();
+     /**
+      * @brief 
+      * Function to send to base station that battery is done charging
+      */
+     bool isDoneCharging();
 };
 #endif //SENSORS_HPP
