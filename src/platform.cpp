@@ -81,29 +81,26 @@ void Platform::loop(){
         sensor_3 = digitalRead(10);
         
 
-        if(sensor_3 == LOW && sensor_2 == HIGH && sensor_1 == HIGH){
+        if(sensor_3 == LOW && sensor_2 == HIGH && sensor_1 == LOW){
           left_motor.setSpeed(0);
           right_motor.setSpeed(2000);
-          Serial.println("Right");
           break;
         }
 
-        else if (sensor_3 == HIGH && sensor_2 == LOW && sensor_1 == HIGH){
+        if (sensor_3 == HIGH && sensor_2 == LOW && sensor_1 == LOW){
           left_motor.setSpeed(-2000);
           right_motor.setSpeed(0);
-          Serial.println("Left");
           break;
         }
 
-        else if (sensor_3 == HIGH && sensor_2 == HIGH && sensor_1 == LOW){
+        if (sensor_3 == HIGH && sensor_2 == HIGH && sensor_1 == LOW){
           left_motor.setSpeed(-2000);
           right_motor.setSpeed(2000);
-          Serial.println("mid");
           break;
         }
 
         else{
-        //   current_state = RobotState::IDLE;
+          current_state = RobotState::IDLE;
           break;
         }
 
