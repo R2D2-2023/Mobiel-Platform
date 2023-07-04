@@ -38,6 +38,10 @@ void Sensors::setUpSensors(){
 
 }
 
+bool Sensors::isStuck(){
+    return loc_x == old_loc_x && loc_y == old_loc_y;
+}
+
 void Sensors::doMeasurements() {
     INA.setMaxCurrentShunt(1, 0.002);
     for (int i = 0; i < 5; i++) {
@@ -93,6 +97,7 @@ void Sensors::getValues(){
     pm10 = pm10_filter.getValue();
 }
 
+
 void Sensors::sendValues(){
     Serial2.print(1);
     Serial2.print(",");
@@ -122,7 +127,10 @@ String incStr;
   if (Serial3.available() > 0 )
   {
     incStr = Serial3.readStringUntil('\n');
-    int i = 0;
+    if (incStr == NULL) {
+        return;
+    }
+    unsigned int i = 0;
     for (; i < incStr.length(); i++)
     {
         if (incStr[i] == ',')
@@ -130,6 +138,8 @@ String incStr;
             break;
         }
     }
+    old_loc_x = loc_x;
+    old_loc_y = loc_y;
     loc_x = incStr.substring(0, i);
     loc_y = incStr.substring(i+1);
     Serial2.print("4,");
@@ -185,15 +195,13 @@ void Sensors::checkValues(){
     if(voltage < 11.6 * 10){
         check_values_byte_1 |= (0x01 << 3); //raise bit 3 of byte 1
     }
-    // if () {
-    //  check_values_byte_1 |= (0x01 << 5); //raise bit 5 of byte 1
-    // }
-
+    if (atoi(loc_x.c_str()) >= 233 || atoi(loc_y.c_str()) >= 66) {
+     check_values_byte_1 |= (0x01 << 5); //raise bit 5 of byte 1
+    }
     if (loc_measured) {
      check_values_byte_1 |= (0x01 << 6); //raise bit 6 of byte 1
     }
-
-    // if(){
-    //  check_values_byte_1 |= (0x01 << 7); //raise bit 7 of byte 1
-    // }
+    if(isStuck()){
+     check_values_byte_1 |= (0x01 << 7); //raise bit 7 of byte 1
+    }
 }

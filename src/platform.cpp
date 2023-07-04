@@ -5,7 +5,7 @@ Platform::Platform(int left_step_pin, int left_dir_pin, int right_step_pin, int 
   mpu(Wire),
   left_motor(AccelStepper::DRIVER, left_step_pin, left_dir_pin),
   right_motor(AccelStepper::DRIVER, right_step_pin, right_dir_pin),
-  current_state(RobotState::BASE_IN),
+  current_state(RobotState::MEASURE),
   base_speed(base_speed),
   last_error(0),
   period(2000),
@@ -55,7 +55,7 @@ void Platform::loop(){
     right_motor.setMaxSpeed(new_speed);
     current_speed = new_speed;
   }
-
+  
   switch (current_state){
     case RobotState::DRIVE:
       new_speed = 3000;
