@@ -5,7 +5,6 @@ Platform::Platform(int left_step_pin, int left_dir_pin, int right_step_pin, int 
   mpu(Wire),
   left_motor(AccelStepper::DRIVER, left_step_pin, left_dir_pin),
   right_motor(AccelStepper::DRIVER, right_step_pin, right_dir_pin),
-  current_state(RobotState::DRIVE),
   base_speed(base_speed),
   last_error(0),
   period(2000),
@@ -40,6 +39,7 @@ void Platform::setup(){
   right_motor.setAcceleration(2000);
   left_motor.setMaxSpeed(base_speed);
   right_motor.setMaxSpeed(base_speed);
+  current_state = RobotState::DRIVE;
 
 }
 
