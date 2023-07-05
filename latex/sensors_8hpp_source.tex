@@ -1,0 +1,64 @@
+\hypertarget{sensors_8hpp_source}{}\doxysection{sensors.\+hpp}
+\label{sensors_8hpp_source}\index{include/sensors.hpp@{include/sensors.hpp}}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{1 \textcolor{preprocessor}{\#ifndef SENSORS\_HPP}}
+\DoxyCodeLine{2 \textcolor{preprocessor}{\#define SENSORS\_HPP}}
+\DoxyCodeLine{3 }
+\DoxyCodeLine{4 \textcolor{preprocessor}{\#include <Arduino.h>}}
+\DoxyCodeLine{5 \textcolor{preprocessor}{\#include <Adafruit\_SCD30.h>}}
+\DoxyCodeLine{6 \textcolor{preprocessor}{\#include <Adafruit\_Sensor.h>}}
+\DoxyCodeLine{7 \textcolor{preprocessor}{\#include <Adafruit\_BME280.h>}}
+\DoxyCodeLine{8 \textcolor{preprocessor}{\#include <sps30.h>}}
+\DoxyCodeLine{9 \textcolor{preprocessor}{\#include "{}INA226.h"{}}}
+\DoxyCodeLine{10 \textcolor{preprocessor}{\#include <Filter.hpp>}}
+\DoxyCodeLine{11 }
+\DoxyCodeLine{12 }
+\DoxyCodeLine{18 \textcolor{keyword}{class }\mbox{\hyperlink{class_sensors}{Sensors}} \{}
+\DoxyCodeLine{19 \textcolor{keyword}{private}:}
+\DoxyCodeLine{24     Adafruit\_BME280 bme; }
+\DoxyCodeLine{25 }
+\DoxyCodeLine{30     INA226 INA = INA226(0x40);}
+\DoxyCodeLine{31 }
+\DoxyCodeLine{37     Adafruit\_SCD30 scd30;}
+\DoxyCodeLine{38     }
+\DoxyCodeLine{43     \textcolor{keywordtype}{unsigned} \textcolor{keywordtype}{int} temperature;}
+\DoxyCodeLine{48     \textcolor{keywordtype}{unsigned} \textcolor{keywordtype}{int} humidity;}
+\DoxyCodeLine{53     \textcolor{keywordtype}{unsigned} \textcolor{keywordtype}{int} pressure;}
+\DoxyCodeLine{58     \textcolor{keywordtype}{unsigned} \textcolor{keywordtype}{int} co2;}
+\DoxyCodeLine{63     \textcolor{keywordtype}{unsigned} \textcolor{keywordtype}{int} voltage;}
+\DoxyCodeLine{68     \textcolor{keywordtype}{unsigned} \textcolor{keywordtype}{int} pm1;}
+\DoxyCodeLine{73     \textcolor{keywordtype}{unsigned} \textcolor{keywordtype}{int} pm25;}
+\DoxyCodeLine{78     \textcolor{keywordtype}{unsigned} \textcolor{keywordtype}{int} pm10;}
+\DoxyCodeLine{83      String loc\_x = \textcolor{stringliteral}{"{}0"{}};}
+\DoxyCodeLine{88      String loc\_y = \textcolor{stringliteral}{"{}0"{}};}
+\DoxyCodeLine{93      \textcolor{keywordtype}{bool} loc\_measured = \textcolor{keyword}{true};}
+\DoxyCodeLine{94 }
+\DoxyCodeLine{95     \textcolor{comment}{//Error bytes}}
+\DoxyCodeLine{96     uint8\_t check\_values\_byte\_0;}
+\DoxyCodeLine{97     uint8\_t check\_values\_byte\_1;}
+\DoxyCodeLine{98   }
+\DoxyCodeLine{103     \mbox{\hyperlink{class_filter}{Filter}} temp\_filter = \mbox{\hyperlink{class_filter}{Filter}}();}
+\DoxyCodeLine{108     \mbox{\hyperlink{class_filter}{Filter}} hum\_filter = \mbox{\hyperlink{class_filter}{Filter}}();}
+\DoxyCodeLine{113     \mbox{\hyperlink{class_filter}{Filter}} co2\_filter = \mbox{\hyperlink{class_filter}{Filter}}();}
+\DoxyCodeLine{118     \mbox{\hyperlink{class_filter}{Filter}} pres\_filter = \mbox{\hyperlink{class_filter}{Filter}}();}
+\DoxyCodeLine{123     \mbox{\hyperlink{class_filter}{Filter}} volt\_filter = \mbox{\hyperlink{class_filter}{Filter}}();}
+\DoxyCodeLine{128     \mbox{\hyperlink{class_filter}{Filter}} pm1\_filter = \mbox{\hyperlink{class_filter}{Filter}}();}
+\DoxyCodeLine{133     \mbox{\hyperlink{class_filter}{Filter}} pm25\_filter = \mbox{\hyperlink{class_filter}{Filter}}();}
+\DoxyCodeLine{138     \mbox{\hyperlink{class_filter}{Filter}} pm10\_filter = \mbox{\hyperlink{class_filter}{Filter}}();}
+\DoxyCodeLine{139     }
+\DoxyCodeLine{140     \textcolor{keywordtype}{void} getValues();}
+\DoxyCodeLine{145     \textcolor{keywordtype}{void} sendValues();}
+\DoxyCodeLine{146     \textcolor{keywordtype}{void} checkValues();}
+\DoxyCodeLine{147     \textcolor{keywordtype}{void} sendErrorByte();}
+\DoxyCodeLine{148 }
+\DoxyCodeLine{149 }
+\DoxyCodeLine{150 \textcolor{keyword}{public}:}
+\DoxyCodeLine{155     \mbox{\hyperlink{class_sensors_a68ef7a2ec8dd0ffd9b35b70b50c0ab09}{Sensors}}();}
+\DoxyCodeLine{160     \textcolor{keywordtype}{void} \mbox{\hyperlink{class_sensors_a95e10f1584ca59d3d08a65b5d13fc697}{setUpSensors}}();}
+\DoxyCodeLine{165     \textcolor{keywordtype}{void} \mbox{\hyperlink{class_sensors_aa45b97242b75f4bd89d17b7da2b7d16e}{doMeasurements}}();}
+\DoxyCodeLine{170      \textcolor{keywordtype}{void} \mbox{\hyperlink{class_sensors_a03374830c2e75717ea041adacfecde5f}{sendLiveLocationValues}}();}
+\DoxyCodeLine{171 \};}
+\DoxyCodeLine{172 \textcolor{preprocessor}{\#endif }\textcolor{comment}{//SENSORS\_HPP}}
+
+\end{DoxyCode}

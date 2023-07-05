@@ -1,0 +1,104 @@
+\hypertarget{class_platform}{}\doxysection{Platform Class Reference}
+\label{class_platform}\index{Platform@{Platform}}
+
+
+Main class for running the \mbox{\hyperlink{class_platform}{Platform}}.  
+
+
+
+
+{\ttfamily \#include $<$platform.\+hpp$>$}
+
+\doxysubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{class_platform_a27b889610313ef53480b3dc23f88147f}{Platform}} (int left\+\_\+step\+\_\+pin, int left\+\_\+dir\+\_\+pin, int right\+\_\+step\+\_\+pin, int right\+\_\+dir\+\_\+pin, int base\+\_\+speed)
+\begin{DoxyCompactList}\small\item\em Construct a new \mbox{\hyperlink{class_platform}{Platform}} object. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{class_platform_a97fd7ab3a743a1fee4ef257504223597}\label{class_platform_a97fd7ab3a743a1fee4ef257504223597}} 
+void {\bfseries setup} ()
+\begin{DoxyCompactList}\small\item\em setup for arduino \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{class_platform_a7b6b1ef47f9fbcb272f3c2802ed3e275}\label{class_platform_a7b6b1ef47f9fbcb272f3c2802ed3e275}} 
+void {\bfseries loop} ()
+\begin{DoxyCompactList}\small\item\em main loop for the arduino \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{class_platform_a5268b2184bb26c4a31f7672919f3acf9}\label{class_platform_a5268b2184bb26c4a31f7672919f3acf9}} 
+void {\bfseries check\+Serial} ()
+\begin{DoxyCompactList}\small\item\em check the serial of the Li\+DAR and look if the lidar detects an object \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{class_platform_a222e064a29bf9747c4ec84dc10bc7600}\label{class_platform_a222e064a29bf9747c4ec84dc10bc7600}} 
+float {\bfseries get\+Angle} ()
+\begin{DoxyCompactList}\small\item\em gets the Yaw of the MPU6050 \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_platform_a2a7c50bc32c6397221f08a02d7a3a2f2}{set\+Motor\+Speed}} (float left\+\_\+wheel, float right\+\_\+wheel)
+\begin{DoxyCompactList}\small\item\em sets the motor speed for both motors \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{class_platform_aec66c12210edb7674476eb8a805b1ff4}\label{class_platform_aec66c12210edb7674476eb8a805b1ff4}} 
+void {\bfseries send\+Cardinal} ()
+\begin{DoxyCompactList}\small\item\em This function sends cardinal directions to PI. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{class_platform_a656eefc5fab53d6297b990c161e16259}{rotate\+To}} (int target\+\_\+angle)
+\begin{DoxyCompactList}\small\item\em rotate the motors so the platform corrects its self/turn the car to the designated angle \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Main class for running the \mbox{\hyperlink{class_platform}{Platform}}. 
+
+\doxysubsection{Constructor \& Destructor Documentation}
+\mbox{\Hypertarget{class_platform_a27b889610313ef53480b3dc23f88147f}\label{class_platform_a27b889610313ef53480b3dc23f88147f}} 
+\index{Platform@{Platform}!Platform@{Platform}}
+\index{Platform@{Platform}!Platform@{Platform}}
+\doxysubsubsection{\texorpdfstring{Platform()}{Platform()}}
+{\footnotesize\ttfamily Platform\+::\+Platform (\begin{DoxyParamCaption}\item[{int}]{left\+\_\+step\+\_\+pin,  }\item[{int}]{left\+\_\+dir\+\_\+pin,  }\item[{int}]{right\+\_\+step\+\_\+pin,  }\item[{int}]{right\+\_\+dir\+\_\+pin,  }\item[{int}]{base\+\_\+speed }\end{DoxyParamCaption})}
+
+
+
+Construct a new \mbox{\hyperlink{class_platform}{Platform}} object. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em left\+\_\+step\+\_\+pin} & \\
+\hline
+{\em left\+\_\+dir\+\_\+pin} & \\
+\hline
+{\em right\+\_\+step\+\_\+pin} & \\
+\hline
+{\em right\+\_\+dir\+\_\+pin} & \\
+\hline
+{\em base\+\_\+speed} & \\
+\hline
+\end{DoxyParams}
+
+
+\doxysubsection{Member Function Documentation}
+\mbox{\Hypertarget{class_platform_a656eefc5fab53d6297b990c161e16259}\label{class_platform_a656eefc5fab53d6297b990c161e16259}} 
+\index{Platform@{Platform}!rotateTo@{rotateTo}}
+\index{rotateTo@{rotateTo}!Platform@{Platform}}
+\doxysubsubsection{\texorpdfstring{rotateTo()}{rotateTo()}}
+{\footnotesize\ttfamily void Platform\+::rotate\+To (\begin{DoxyParamCaption}\item[{int}]{target\+\_\+angle }\end{DoxyParamCaption})}
+
+
+
+rotate the motors so the platform corrects its self/turn the car to the designated angle 
+
+
+\begin{DoxyParams}{Parameters}
+{\em target\+\_\+angle} & \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{class_platform_a2a7c50bc32c6397221f08a02d7a3a2f2}\label{class_platform_a2a7c50bc32c6397221f08a02d7a3a2f2}} 
+\index{Platform@{Platform}!setMotorSpeed@{setMotorSpeed}}
+\index{setMotorSpeed@{setMotorSpeed}!Platform@{Platform}}
+\doxysubsubsection{\texorpdfstring{setMotorSpeed()}{setMotorSpeed()}}
+{\footnotesize\ttfamily void Platform\+::set\+Motor\+Speed (\begin{DoxyParamCaption}\item[{float}]{left\+\_\+wheel,  }\item[{float}]{right\+\_\+wheel }\end{DoxyParamCaption})}
+
+
+
+sets the motor speed for both motors 
+
+
+\begin{DoxyParams}{Parameters}
+{\em left\+\_\+wheel} & \\
+\hline
+{\em right\+\_\+wheel} & \\
+\hline
+\end{DoxyParams}
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+include/platform.\+hpp\end{DoxyCompactItemize}
