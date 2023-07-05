@@ -23,7 +23,7 @@ Platform::Platform(int left_step_pin, int left_dir_pin, int right_step_pin, int 
 
 
 void Platform::setup(){
-  Serial.begin(115200);
+  Serial.begin(9600);
   Serial2.begin(57600);
   Serial3.begin(9600);
 
@@ -61,9 +61,9 @@ void Platform::loop(){
       new_speed = 3000;
       left_motor.setSpeed(3000);
       right_motor.setSpeed(3000);
-      // checkSerial();
+      checkSerial();
       rotateTo(0);
-      // sendCardinal();
+      sendCardinal();
       break;
 
     case RobotState::STOP:
