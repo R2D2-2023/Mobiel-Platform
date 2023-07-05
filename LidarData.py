@@ -12,14 +12,6 @@ if __name__ == '__main__':
     ser.reset_input_buffer()
 
 blocked = 0
-
-arduino_react = False 
-# while arduino_react == False:
-#     ser.write(b"BOOTED\n")
-#     line = ser.readline()
-#     data = line.decode().strip()
-#     if data == "HEARD":
-#         arduino_react = True
 last_dir = "P"
 if not lidar.open():
         print("Cannot open lidar")
