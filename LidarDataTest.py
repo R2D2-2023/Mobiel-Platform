@@ -1,26 +1,24 @@
-from lidarsetup import LidarX2
+from Library import LidarX2
 import time
-import numpy
 import math
 import statistics
 import serial
-lidar = LidarX2("/dev/ttyUSB0")  # Name of the serial port, can be /dev/tty*, COM*, etc.
+lidar = LidarX2("/dev/ttyUSB1")
+import cv2
+import os
+import numpy as np
+from Library import LidarX2
+import statistics  # Name of the serial port, can be /dev/tty*, COM*, etc.
 
 
 if __name__ == '__main__':
-    ser = serial.Serial('/dev/ttyACM0', 9600, timeout=1)
+    ser = serial.Serial('/dev/ttyACM1', 9600, timeout=1)
     ser.reset_input_buffer()
 
 blocked = 0
 
 arduino_react = False 
-# while arduino_react == False:
-#     ser.write(b"BOOTED\n")
-#     line = ser.readline()
-#     data = line.decode().strip()
-#     if data == "HEARD":
-#         arduino_react = True
-last_dir = "P"
+last_dir = None
 if not lidar.open():
         print("Cannot open lidar")
         exit(1)
@@ -33,7 +31,6 @@ while True:
         print(direction)
     
     count = 0
-
     
     list=[]
     t = time.time()
@@ -45,7 +42,7 @@ while True:
     distance=[]
     degrees=[]
     
-    img = numpy.ones((480, 640))
+    img = np.ones((480, 640))
     for i in list:
         x=str(i).split(":")    
         degrees.append(float(x[0]))
@@ -54,7 +51,6 @@ while True:
     count = 0
     count2 = 0 
     median = []
-    # t = time.time()
     minimum = []
      
     for j in range(len(degrees)):
@@ -80,5 +76,4 @@ while True:
                             print("plz stop :(")
                             ser.write(b"1\n")
                             count2 = 0
-# print(t-time.time())
 
